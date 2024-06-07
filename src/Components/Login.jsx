@@ -9,18 +9,23 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
   const SignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/");
+      const user = auth.currentUser;
+      if (user) {
+        navigate("/");
+      }
 
       console.log(currentUser);
       // You can add additional logic here, such as updating user profile with the username
     } catch (error) {
       console.error(error);
+      setErrorMessage("Incorrect email or password");
       // Handle sign-up error
     }
   };
@@ -70,6 +75,7 @@ const Login = () => {
           <button className="p-2  bg-slate-500 " onClick={SignIn}>
             Login
           </button>
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           <p className=" text-black text-opacity-50 hover:text-opacity-100">
             Already have account?<Link to="/register">Register</Link>
           </p>
