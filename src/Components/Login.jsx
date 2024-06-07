@@ -1,76 +1,82 @@
-import { app } from "../firebase.config.js";
-import { database } from "../firebase.config.js";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+
+import { auth, googleProvider } from "../firebase.config.js";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
+import google from "../assets/google.png";
 
 const Login = () => {
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-    const username = e.target.username.value;
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    // createUserWithEmailAndPassword(
-    //   (database, email, password).then((data) => {
-    //     console.log(data, "authData");
-    //   })
-    // );
+  const navigate = useNavigate();
 
+  const SignIn = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        database,
-        email,
-        password,
-        username
-      );
-      const user = userCredential.user;
-      console.log(user, "authData");
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/");
+
+      console.log(currentUser);
       // You can add additional logic here, such as updating user profile with the username
     } catch (error) {
       console.error(error);
       // Handle sign-up error
     }
   };
-  return (
-    <div className=" form w-full min-h-screen  flex flex-col justify-center items-center">
-      <h1 className="text-center text-2xl mt-5">Welcome to </h1>
-      <h1 className="text-center text-6xl italic animate-pulse text-purple-600">
-        We Chat
-      </h1>
-      <div className="  flex flex-col justify-center items-center mt-10  p-2 w-96 rounded-lg text-xl bg-orange-200 bg-opacity-50 shadow-lg ">
-        <h2 className="text-3xl">Login</h2>
-        <form
-          onSubmit={(e) => handleSubmit(e)}
-          className="flex flex-col p-5 gap-1"
-        >
-          <label className="p-2 text-md">Username</label>
-          <input
-            type="text"
-            name="username"
-            className="bg-transparent rounded-lg w-64 outline-none bg-white border-none text-sm p-2"
-          ></input>
-          <label className="p-2 text-md">Email</label>
-          <input
-            type="email"
-            name="email"
-            className="bg-transparent rounded-lg  outline-none  border-none bg-white p-2 text-sm "
-          ></input>
-          <label className="p-2 text-md">Password</label>
-          <input
-            type="password"
-            name="password"
-            className="bg-transparent rounded-lg border-none bg-white outline-none text-sm p-2  "
-          ></input>
+  const SignInwithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      // const user = userCredential.user;
+      console.log(auth?.currentUser?.email);
+      // You can add additional logic here, such as updating user profile with the username
+    } catch (error) {
+      console.error(error);
+      // Handle sign-up error
+    }
+  };
 
-          <button className="p-1 bg-white m-10 bg-opacity-50 rounded-xl hover:bg-opacity-100 cursor-pointer w-42">
-            Create Account
+  return (
+    <div className="  min-h-screen flex flex-col gap-3  justify-center  ">
+      {/* <div className="   flex flex-col justify-center items-center">
+        <h1 className="text-center text-2xl mt-5">Welcome to </h1>
+        <h1 className="text-center text-6xl italic animate-pulse text-purple-600">
+          We Chat
+        </h1>
+      </div> */}
+      <div className=" bg-slate-400 p-5 flex flex-col justify-center items-center rounded-lg  ">
+        <h1 className="text-3xl text-white">Login</h1>
+        <div className="flex flex-col gap-3 p-5 items-center ">
+          {/* <input
+            className="p-1 bg-slate-300 border-none outline-none"
+            type="text"
+            placeholder="username"
+            onChange={(e) => setUsername(e.target.value)}
+          ></input> */}
+          <input
+            className="p-1 bg-slate-300 border-none outline-none"
+            type="email"
+            placeholder="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></input>
+          <input
+            className="p-1 bg-slate-300 border-none outline-none"
+            type="password"
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          ></input>
+          <button className="p-2  bg-slate-500 " onClick={SignIn}>
+            Login
           </button>
-          <a
-            href="#"
-            className="text-sm opacity-75 hover:opacity-100 hover:text-fuchsia-600"
-          >
-            Already have account,Sign In
-          </a>
-        </form>
+          <p className=" text-black text-opacity-50 hover:text-opacity-100">
+            Already have account?<Link to="/register">Register</Link>
+          </p>
+          <button onClick={SignInwithGoogle}>
+            <img src={google} className="w-8"></img>
+          </button>
+        </div>
       </div>
     </div>
   );

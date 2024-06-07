@@ -1,14 +1,48 @@
+import { useState, useEffect, useContext } from "react";
 import Login from "./Components/Login";
 import Chatapp from "./Components/Chatapp";
 import Mainchat from "./Components/Mainchat";
+import { AuthContext } from "./Components/authContext";
+import Register from "./Components/Regiter";
+
+import {
+  createBrowserRouter,
+  Routes,
+  Route,
+  Link,
+  BrowserRouter,
+  Navigate,
+} from "react-router-dom";
 
 const App = () => {
+  const { currentUser } = useContext(AuthContext);
+
+  const ProtectedRoute = ({ children }) => {
+    if (!currentUser) {
+      return <Navigate to="/login/"></Navigate>;
+    }
+    return children;
+    console.log(currentUser);
+  };
   return (
-    <div>
-      <div className=" app flex flex-row gap-0 ">
-        <Chatapp></Chatapp>
-        <Mainchat></Mainchat>
-      </div>
+    <div className=" app flex flex-row gap-0 p-5  w-full h-screen  justify-center items-center">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/">
+            <Route
+              index
+              element={
+                <ProtectedRoute>
+                  <Mainchat></Mainchat>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 };
