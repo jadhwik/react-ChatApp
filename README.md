@@ -3,8 +3,7 @@
 
 **React ChatApp**
 
-Link- https://jadhwik.github.io/react-ChatApp/login/
-
+Link- https://jadhwik.github.io/react-ChatApp/
 
 ![react-chatAppp](https://github.com/jadhwik/react-ChatApp/assets/99212318/07a5352a-ffa1-476f-90f7-608482be8236)
 ![chatapp](https://github.com/jadhwik/react-ChatApp/assets/99212318/ee77d08b-aca8-4973-b98e-cd787f8203a6)
