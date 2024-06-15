@@ -36,7 +36,7 @@ const Chatapp = ({
     handleChatsFun();
   };
 
-  console.log("chats data are", Object.entries(chats));
+  // console.log("chats data are", Object.entries(chats));
 
   const filteredData = userData
     .filter((data) => data.uid !== currentUser.uid)
@@ -69,12 +69,21 @@ const Chatapp = ({
       <div className=" bg-stone-400 bg-opacity-50 flex flex-col max-w-lg  ">
         <div className="flex flex-row items-center  justify-between ">
           <h1 className="text-2xl font-bold text-white  ml-6">Chats</h1>
-          <button
-            onClick={() => signOut(auth)}
-            className="text-white p-2 bg-slate-400 m-3 rounded-lg h-10 bg-opacity-50 hover:bg-opacity-100"
-          >
-            Logout
-          </button>
+          <div className="flex flex-row justify-center items-center">
+            <div>
+              <img
+                src={currentUser.photoURL}
+                className="w-8 rounded-full"
+              ></img>
+            </div>
+
+            <button
+              onClick={() => signOut(auth)}
+              className="text-white p-2 bg-slate-400 m-3 rounded-lg h-10 bg-opacity-50 hover:bg-opacity-100  w-20"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         <input
@@ -92,40 +101,44 @@ const Chatapp = ({
         className=" chat  sm:w-auto sm:text-sm md:w-auto md:text-md h-auto "
       >
         <div className="flex flex-col justify-start bg-stone-300 bg-opacity-50 w-72 p-2 rounded-md m-2 h-96 overflow-y-scroll">
-          {Object.entries(chats).map(([chatId, chatData]) => {
-            const userInfo = chatData.userInfo;
-            if (dataToDisplay.some((data) => data.uid === userInfo.uid)) {
-              return (
-                <button
-                  onClick={() => handleSelect(userInfo)}
-                  key={userInfo.uid}
-                >
-                  <div className="flex flex-row justify-between items-center p-2 hover:bg-zinc-500 hover:bg-opacity-50 rounded-md">
-                    <div className="flex flex-row justify-center items-center">
-                      <img
-                        src={imageError || userInfo.photoURL}
-                        onError={handleImageError}
-                        className="w-10 rounded-full"
-                        alt=""
-                      ></img>
-                      <div className="flex flex-col justify-center item-center p-2">
-                        <p className="text-white font-bold">
-                          {userInfo.displayName}
-                        </p>
-                        <p className="text-white m-1">
-                          {chatData.lastMessage?.inputText}
-                        </p>
+          {dataToDisplay.length > 0 ? (
+            Object.entries(chats).map(([chatId, chatData]) => {
+              const userInfo = chatData.userInfo;
+              if (dataToDisplay.some((data) => data.uid === userInfo.uid)) {
+                return (
+                  <button
+                    onClick={() => handleSelect(userInfo)}
+                    key={userInfo.uid}
+                  >
+                    <div className="flex flex-row justify-between items-center p-2 hover:bg-zinc-500 hover:bg-opacity-50 rounded-md">
+                      <div className="flex flex-row justify-center items-center">
+                        <img
+                          src={userInfo.photoURL || imageError}
+                          onError={handleImageError}
+                          className="w-10 h-10 rounded-full object-cover"
+                          alt={userInfo.displayName}
+                        />
+                        <div className="flex flex-col text-justify item-center p-2">
+                          <p className="text-white font-bold text-lg">
+                            {userInfo.displayName}
+                          </p>
+                          <p className="text-white">
+                            {chatData.lastMessage?.inputText}
+                          </p>
+                        </div>
                       </div>
+                      <p className="text-red-700 text-sm">
+                        {chatData.lastMessage?.times}
+                      </p>
                     </div>
-                    <p className="text-red-700 text-sm">
-                      {chatData.lastMessage?.times}
-                    </p>
-                  </div>
-                </button>
-              );
-            }
-            return null;
-          })}
+                  </button>
+                );
+              }
+              return null;
+            })
+          ) : (
+            <p className="text-white">No user found</p>
+          )}
         </div>
       </div>
     </div>
